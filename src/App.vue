@@ -86,7 +86,6 @@ function removePrize(index: number) {
   Array.prototype.splice.call(segments.value, index, 1)
 }
 
-
 function normalizeDegrees(deg: number) {
   return ((deg % 360) + 360) % 360
 }
@@ -110,7 +109,7 @@ onMounted(() => {
       <g v-for="(label, i) in segments" :key="i" class="segment"
         :style="{ transform: `rotate(${angle}deg)`, transformOrigin: '200px 200px' }">
         <path :d="getPath(i)" />
-        <text :x="getTextX(i)" :y="getTextY(i)"
+        <text :x="getTextX(i)+10" :y="getTextY(i)"
           :transform="`rotate(${getRadialAngle(i)}, ${getTextX(i)}, ${getTextY(i)})`" class="segment-text">{{ label
           }}</text>
       </g>
@@ -241,6 +240,7 @@ html, body {
   gap: 10px;
   align-items: center;
   justify-items: stretch;
+  flex-wrap: wrap;
 }
 
 .prize-input {
@@ -269,7 +269,14 @@ html, body {
 }
 
 .manage-options {
-  padding: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+@media (min-width : 1024px) {
+  .manage-options {
+      padding: 20px;
+  }
 }
 
 .prize-list ul {
