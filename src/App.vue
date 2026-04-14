@@ -145,6 +145,14 @@ onMounted(() => {
 </template>
 
 <style>
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #222;
+  color: #ddd;
+  font-family: 'Arial', sans-serif;
+}
 .wheel-container {
   display: flex;
   flex-direction: column;
