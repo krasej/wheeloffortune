@@ -261,6 +261,7 @@ html, body {
   cursor: pointer;
   transition: background-color 0.3s;
   width: 100%;
+  flex: 1;
 }
 
 .add-button:hover {
@@ -276,6 +277,10 @@ html, body {
 @media (min-width : 1024px) {
   .manage-options {
       padding: 20px;
+  }
+
+  .add-button {
+    flex: 1;
   }
 }
 
