@@ -50,12 +50,11 @@ function spin() {
   const randomSegment = Math.floor(Math.random() * numSegments.value)
   const centerAngleRad = (randomSegment + 0.5) * anglePerSegment.value
   const pointerAngleRad = -Math.PI / 2
-  const targetAngleRad = pointerAngleRad - centerAngleRad
-  const targetAngleDeg = targetAngleRad * 180 / Math.PI
+  const targetAngleRad = pointerAngleRad - centerAngleRadLonger 
   const spins = Math.floor(Math.random() * 20) + 5
   const targetAngle = targetAngleDeg + spins * 360
 
-  const duration = 3000 // 3 seconds
+  const duration = 5000 // 5 seconds
   const startAngle = angle.value
   const startTime = Date.now()
 
