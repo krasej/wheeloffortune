@@ -40,3 +40,18 @@ yarn dev
 ```sh
 yarn build
 ```
+
+### Deploy to GitHub Pages
+
+This project is configured to deploy from the `dist` build output to the `gh-pages` branch.
+
+```sh
+npm install --save-dev gh-pages
+npm run deploy
+```
+
+After the first deployment, the site should be available at:
+
+`https://krasej.github.io/wheeloffortune`
+
+If your repository name changes, update `base` in `vite.config.ts` accordingly.
