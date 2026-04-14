@@ -240,6 +240,7 @@ html, body {
   display: flex;
   gap: 10px;
   align-items: center;
+  justify-items: stretch;
 }
 
 .prize-input {
@@ -247,22 +248,24 @@ html, body {
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width: 200px;
+  width: 250px;
 }
 
 .add-button {
   padding: 8px 16px;
   font-size: 16px;
   background-color: #2196F3;
+  border: 1px solid #2196F3;
   color: white;
-  border: none;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
+  width: 100%;
 }
 
 .add-button:hover {
   background-color: #1976D2;
+  border-color: #1976D2;
 }
 
 .manage-options {
