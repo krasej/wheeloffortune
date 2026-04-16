@@ -5,7 +5,10 @@ const angle = ref(0)
 const isSpinning = ref(false)
 const winner = ref<string | undefined>('')
 const newPrize = ref('')
-let previousTopSegment = -1
+
+let title = ref('Who is the best director?')
+let editTitle = ref(false)
+
 
 const segments = ref([
   'Quentin Tarantino',
@@ -44,8 +47,6 @@ function spin() {
   if (isSpinning.value || numSegments.value === 0) return
   isSpinning.value = true
   winner.value = ''
-
-  previousTopSegment = getTopSegment(angle.value)
 
   const randomSegment = Math.floor(Math.random() * numSegments.value)
   const centerAngleRad = (randomSegment + 0.5) * anglePerSegment.value
@@ -104,7 +105,12 @@ onMounted(() => {
 
 <template>
   <div class="wheel-container">
-    <h1>Who is the best director?</h1>
+    <h1 v-on:click="editTitle = !editTitle">{{ title }}</h1>
+
+    <div v-if="editTitle" class="edit-title">
+      <input class="edit-input" v-on:keydown.enter="editTitle = false" v-model="title" placeholder="Enter new title" />
+    </div>
+
     <svg width="400" height="400" class="wheel-svg">
       <g v-for="(label, i) in segments" :key="i" class="segment"
         :style="{ transform: `rotate(${angle}deg)`, transformOrigin: '200px 200px' }">
@@ -284,12 +290,17 @@ g.segment:nth-of-type(4n) {
   flex-wrap: wrap;
 }
 
-.prize-input {
+.prize-input, .edit-input {
   padding: 8px;
   font-size: 16px;
   border: 1px solid var(--color-border-muted);
   border-radius: 4px;
   width: 250px;
+}
+
+.edit-input{
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 .add-button {
