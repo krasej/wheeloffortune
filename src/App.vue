@@ -239,7 +239,7 @@ g.segment:nth-of-type(4n) {
 
 .title-heading::after {
   content: ' _';
-  animation: blink-cursor 1.5s steps(1, end) infinite;
+  animation: blink-cursor 1500ms steps(1, end) infinite;
 }
 
 @keyframes blink-cursor {
