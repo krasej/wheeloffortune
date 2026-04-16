@@ -105,7 +105,7 @@ onMounted(() => {
 
 <template>
   <div class="wheel-container">
-    <h1 v-on:click="editTitle = !editTitle">{{ title }}</h1>
+    <h1 class="title-heading" v-on:click="editTitle = !editTitle">{{ title }}</h1>
 
     <div v-if="editTitle" class="edit-title">
       <input class="edit-input" v-on:keydown.enter="editTitle = false" v-model="title" placeholder="Enter new title" />
@@ -230,6 +230,25 @@ g.segment:nth-of-type(4n) {
   fill: var(--color-segment-secondary);
   stroke: var(--color-card-border);
   stroke-width: 1;
+}
+
+.title-heading {
+  position: relative;
+  display: inline-block;
+}
+
+.title-heading::after {
+  content: ' _';
+  animation: blink-cursor 1.5dded blings steps(1, end) infinite;
+}
+
+@keyframes blink-cursor {
+  0%, 50% {
+    opacity: 1;
+  }
+  50.01%, 100% {
+    opacity: 0;
+  }
 }
 
 .spin-button {
