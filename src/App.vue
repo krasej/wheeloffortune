@@ -50,7 +50,8 @@ function spin() {
   const randomSegment = Math.floor(Math.random() * numSegments.value)
   const centerAngleRad = (randomSegment + 0.5) * anglePerSegment.value
   const pointerAngleRad = -Math.PI / 2
-  const targetAngleRad = pointerAngleRad - centerAngleRadLonger 
+  const targetAngleRad = pointerAngleRad - centerAngleRad
+  const targetAngleDeg = targetAngleRad * 180 / Math.PI
   const spins = Math.floor(Math.random() * 20) + 5
   const targetAngle = targetAngleDeg + spins * 360
 
@@ -112,8 +113,8 @@ onMounted(() => {
           :transform="`rotate(${getRadialAngle(i)}, ${getTextX(i)}, ${getTextY(i)})`" class="segment-text">{{ label
           }}</text>
       </g>
-      <circle cx="200" cy="200" r="20" fill="#333" stroke="#fff" stroke-width="2" />
-      <polygon points="200,50 185,30 215,30" fill="#FF6B6B" stroke="#000" stroke-width="1" class="pointer" />
+      <circle cx="200" cy="200" r="20" class="center-circle" />
+      <polygon points="200,50 185,30 215,30" class="pointer" />
     </svg>
     <button @click="spin" :disabled="isSpinning || numSegments === 0" class="spin-button">
       {{ isSpinning ? 'Spinning...' : 'Spin the Wheel' }}
@@ -144,11 +145,33 @@ onMounted(() => {
 
 <style>
 
+:root {
+  --color-background: #222;
+  --color-text: #ddd;
+  --color-card-border: #333;
+  --color-card-shadow: rgba(0, 0, 0, 0.2);
+  --color-segment-alt: #976bff;
+  --color-segment-first: #F7DC6F;
+  --color-segment-second: #FF6B6B;
+  --color-segment-third: #6ba6ff;
+  --color-segment-fourth: #4CAF50;
+  --color-text-dark: #333;
+  --color-text-muted: #555;
+  --color-button-primary: #4CAF50;
+  --color-button-primary-hover: #45a049;
+  --color-button-disabled: #cccccc;
+  --color-button-accent: #2196F3;
+  --color-button-accent-hover: #1976D2;
+  --color-border-muted: #ccc;
+  --color-surface: #111;
+  --color-white: #ffffff;
+}
+
 html, body {
   margin: 0;
   padding: 0;
-  background-color: #222;
-  color: #ddd;
+  background-color: var(--color-background);
+  color: var(--color-text);
   font-family: 'Arial', sans-serif;
 }
 .wheel-container {
@@ -159,36 +182,55 @@ html, body {
 }
 
 .wheel-svg {
-  border: 2px solid #333;
+  border: 2px solid var(--color-card-border);
   border-radius: 50%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px var(--color-card-shadow);
   margin-bottom: 20px;
 }
 
-.segment:nth-child(odd) {
-  fill: #F7DC6F;
+g.segment:nth-of-type(1n) {
+  fill: var(--color-segment-first);
 }
 
-.segment:nth-last-child(-n + 3) {
-  fill: #4CAF50;
+g.segment:last-of-type {
+  fill: var(--color-segment-alt);
 }
 
-.segment:nth-child(even) {
-  fill: #FF6B6B;
+g.segment:nth-of-type(2n) {
+  fill: var(--color-segment-second);
+}
+g.segment:nth-of-type(3n) {
+  fill: var(--color-segment-third);
+}
+
+g.segment:nth-of-type(4n) {
+  fill: var(--color-segment-fourth);
 }
 
 .segment-text {
-  fill: #333;
+  fill: var(--color-text-dark);
   font-size: 14px;
   text-anchor: middle;
   dominant-baseline: middle;
 }
 
+.center-circle {
+  fill: var(--color-card-border);
+  stroke: var(--color-white);
+  stroke-width: 2;
+}
+
+.pointer {
+  fill: var(--color-segment-secondary);
+  stroke: var(--color-card-border);
+  stroke-width: 1;
+}
+
 .spin-button {
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #4CAF50;
-  color: white;
+  background-color: var(--color-button-primary);
+  color: var(--color-white);
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -197,11 +239,11 @@ html, body {
 }
 
 .spin-button:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: var(--color-button-primary-hover);
 }
 
 .spin-button:disabled {
-  background-color: #cccccc;
+  background-color: var(--color-button-disabled);
   cursor: not-allowed;
 }
 
@@ -210,8 +252,8 @@ html, body {
   padding: 2px 6px;
   font-size: 14px;
   font-weight: bold;
-  background-color: #333;
-  color: #ddd;
+  background-color: var(--color-card-border);
+  color: var(--color-text);
   border: none;
   border-radius: 30px;
   cursor: pointer;
@@ -219,7 +261,7 @@ html, body {
 }
 
 .remove-button:hover {
-  background-color: #555;
+  background-color: var(--color-text-muted);
 }
 
 .prize-list{
@@ -229,7 +271,7 @@ html, body {
 .winner {
   font-size: 24px;
   font-weight: bold;
-  color: #ddd;
+  color: var(--color-text);
   margin-top: 10px;
   margin-bottom: 10px;
 }
@@ -245,7 +287,7 @@ html, body {
 .prize-input {
   padding: 8px;
   font-size: 16px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border-muted);
   border-radius: 4px;
   width: 250px;
 }
@@ -253,9 +295,9 @@ html, body {
 .add-button {
   padding: 8px 16px;
   font-size: 16px;
-  background-color: #2196F3;
-  border: 1px solid #2196F3;
-  color: white;
+  background-color: var(--color-button-accent);
+  border: 1px solid var(--color-button-accent);
+  color: var(--color-white);
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -264,8 +306,8 @@ html, body {
 }
 
 .add-button:hover {
-  background-color: #1976D2;
-  border-color: #1976D2;
+  background-color: var(--color-button-accent-hover);
+  border-color: var(--color-button-accent-hover);
 }
 
 .manage-options {
@@ -296,7 +338,7 @@ html, body {
 }
 
 .prize-list li:nth-child(odd) {
-  background-color: #111;
+  background-color: var(--color-surface);
 }
 
 h2{
