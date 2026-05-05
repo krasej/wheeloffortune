@@ -9,6 +9,7 @@ const winner = ref<string | undefined>('')
 const newPrize = ref('')
 const titleElement = ref<HTMLElement | null>(null);
 
+
 let title = ref('Who is the best director?')
 
 function validate(event: Event) {
@@ -21,9 +22,12 @@ function validate(event: Event) {
 
 defineExpose({ titleElement })
 
+const wasEdited = ref(false)
+
 const watchTitle = watch(title, (newValue) => {
 
   document.title = newValue
+  wasEdited.value = true
 }
   , { immediate: true })
 
@@ -35,25 +39,35 @@ const segments = ref([
 const numSegments = computed(() => segments.value.length)
 const anglePerSegment = computed(() => (2 * Math.PI) / numSegments.value)
 
+const wheelRadius = ref(190)
+const imageSize = ref(400)
+const imageCenter = ref(imageSize.value / 2)
+
+if (window.innerWidth > 768) {
+  wheelRadius.value = 300
+  imageSize.value = 620
+  imageCenter.value = imageSize.value / 2
+}
+
 function getPath(i: number) {
   const startAngle = i * anglePerSegment.value
   const endAngle = (i + 1) * anglePerSegment.value
-  const x1 = 200 + 170 * Math.cos(startAngle)
-  const y1 = 200 + 170 * Math.sin(startAngle)
-  const x2 = 200 + 170 * Math.cos(endAngle)
-  const y2 = 200 + 170 * Math.sin(endAngle)
+  const x1 = imageCenter.value + wheelRadius.value * Math.cos(startAngle)
+  const y1 = imageCenter.value + wheelRadius.value * Math.sin(startAngle)
+  const x2 = imageCenter.value + wheelRadius.value * Math.cos(endAngle)
+  const y2 = imageCenter.value + wheelRadius.value * Math.sin(endAngle)
   const largeArc = endAngle - startAngle > Math.PI ? 1 : 0
-  return `M 200 200 L ${x1} ${y1} A 170 170 0 ${largeArc} 1 ${x2} ${y2} Z`
+  return `M ${imageCenter.value} ${imageCenter.value} L ${x1} ${y1} A ${wheelRadius.value} ${wheelRadius.value} 0 ${largeArc} 1 ${x2} ${y2} Z`
 }
 
 function getTextX(i: number) {
   const textAngle = (i + 0.5) * anglePerSegment.value
-  return 200 + Math.cos(textAngle) * 70
+  return imageCenter.value + Math.cos(textAngle) * wheelRadius.value * 0.5
 }
 
 function getTextY(i: number) {
   const textAngle = (i + 0.5) * anglePerSegment.value
-  return 200 + Math.sin(textAngle) * 70
+  return imageCenter.value + Math.sin(textAngle) * wheelRadius.value * 0.5
 }
 
 function getRadialAngle(i: number) {
@@ -122,22 +136,22 @@ onMounted(() => {
 
 <template>
   <div class="wheel-container">
-    <h1 class="title-heading" ref="titleElement" spellcheck="false" contenteditable="true" @blur="validate" @keydown.enter="validate">{{ title }}</h1>
+    <h1 class="title-heading" :class="{ 'edited': wasEdited }" ref="titleElement" spellcheck="false" contenteditable="true" @blur="validate" @keydown.enter="validate">{{ title }}</h1>
 
-    <ConfettiExplosion v-if="winner" :active="!!winner" :duration="3000" :stageWidth="800" :stageHeight="500" :colors="['var(--color-segment-first)', 'var(--color-segment-second)', 'var(--color-segment-third)', 'var(--color-segment-fourth)', 'var(--color-segment-third)', 'var(--color-segment-alt)']" />
+    <ConfettiExplosion v-if="winner" :active="!!winner" :duration="3000" :stageWidth="800" :stageHeight="imageSize" :colors="['var(--color-segment-first)', 'var(--color-segment-second)', 'var(--color-segment-third)', 'var(--color-segment-fourth)', 'var(--color-segment-third)', 'var(--color-segment-alt)']" />
 
-    <svg width="400" height="400" class="wheel-svg">
-      <circle cx="200" cy="200" r="170" class="outer-circle" />
+    <svg :width="imageSize" :height="imageSize" class="wheel-svg">
+      <circle :cx="imageCenter" :cy="imageCenter" :r="wheelRadius" class="outer-circle" />
       <g v-for="(label, i) in segments" :key="i" class="segment"
-        :style="{ transform: `rotate(${angle}deg)`, transformOrigin: '200px 200px' }">
+        :style="{ transform: `rotate(${angle}deg)`, transformOrigin: `${imageCenter}px ${imageCenter}px` }">
         <path :d="getPath(i)" />
         <text :x="getTextX(i) + 10" :y="getTextY(i)"
           :transform="`rotate(${getRadialAngle(i)}, ${getTextX(i)}, ${getTextY(i)})`" class="segment-text">{{ label
           }}</text>
       </g>
 
-      <circle cx="200" cy="200" r="20" class="center-circle" />
-      <polygon points="200,40 185,20 215,20" class="pointer" />
+      <circle :cx="imageCenter" :cy="imageCenter" r="20" class="center-circle" />
+      <polygon :points="imageCenter + ',20 ' + (imageCenter - 15) + ',0 ' + (imageCenter + 15) + ',0'" class="pointer" />
     </svg>
     <button @click="spin" :disabled="isSpinning || numSegments === 0" class="spin-button">
       {{ isSpinning ? 'Spinning...' : 'Spin the Wheel' }}
