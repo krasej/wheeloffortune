@@ -6,9 +6,19 @@ const angle = ref(0)
 const isSpinning = ref(false)
 const winner = ref<string | undefined>('')
 const newPrize = ref('')
+const titleElement = ref<HTMLElement | null>(null);
 
 let title = ref('Who is the best director?')
-let editTitle = ref(false)
+
+function validate(event: Event) {
+  (event.target as HTMLInputElement).blur()
+
+  if(!titleElement.value?.innerText) return
+
+  title.value = titleElement.value.innerText.trim()
+}
+
+defineExpose({ titleElement })
 
 const watchTitle = watch(title, (newValue) => {
 
@@ -111,11 +121,7 @@ onMounted(() => {
 
 <template>
   <div class="wheel-container">
-    <h1 class="title-heading" v-on:click="editTitle = !editTitle">{{ title }}</h1>
-
-    <div v-if="editTitle" class="edit-title">
-      <input class="edit-input" v-on:keydown.enter="editTitle = false" v-model="title" placeholder="Enter new title" />
-    </div>
+    <h1 class="title-heading" ref="titleElement" contenteditable @blur="validate" @keydown.enter="validate">{{ title }}</h1>
 
     <svg width="400" height="400" class="wheel-svg">
       <circle cx="200" cy="200" r="150" class="outer-circle" />
