@@ -121,7 +121,7 @@ onMounted(() => {
 
 <template>
   <div class="wheel-container">
-    <h1 class="title-heading" ref="titleElement" spellcheck="false" @blur="validate" @keydown.enter="validate">{{ title }}</h1>
+    <h1 class="title-heading" ref="titleElement" spellcheck="false" contenteditable="true" @blur="validate" @keydown.enter="validate">{{ title }}</h1>
 
     <svg width="400" height="400" class="wheel-svg">
       <circle cx="200" cy="200" r="150" class="outer-circle" />
