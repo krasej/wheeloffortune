@@ -3,8 +3,15 @@ import { ref } from 'vue'
 
 const emit = defineEmits(['options'])
 
-const optionsInput = ref('')
-const isOpen = ref(false)
+const props = defineProps({
+    options: {
+        type: Array,
+        required: true
+    }
+})
+
+const optionsInput = ref(props.options.join(', '));
+const isOpen = ref(false);
 const error = ref('');
 
 
