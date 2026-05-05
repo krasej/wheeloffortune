@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue'
+import ProModule from './components/ProModule.vue'
 
 const angle = ref(0)
 const isSpinning = ref(false)
@@ -153,6 +154,9 @@ onMounted(() => {
         <button @click="removePrize(index)" class="remove-button">x</button>
       </li>
     </ul>
+
+    <ProModule @options="(options) => { segments = options }" />
+
   </div>
 </template>
 
