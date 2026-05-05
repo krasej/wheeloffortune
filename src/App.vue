@@ -109,8 +109,16 @@ function spin() {
 }
 
 function addPrize() {
-  if (!newPrize.value.trim()) return
-  segments.value.push(newPrize.value.trim())
+
+  let newPriceFormatted = newPrize.value.trim()
+
+  if( newPriceFormatted === '') return
+
+  else if (newPriceFormatted.length >= 25) {
+    newPriceFormatted = newPriceFormatted.substring(0, 25) + '...'
+  }
+
+  segments.value.push(newPriceFormatted)
   newPrize.value = ''
 }
 
@@ -193,7 +201,7 @@ onUnmounted(() => {
     <ul v-if="segments.length > 0" class="prize-list">
       <li v-for="(prize, index) in segments" :key="index">
         {{ prize }}
-        <button @click="removePrize(index)" class="remove-button">x</button>
+        <button @click="removePrize(index)" class="remove-button">&times;</button>
       </li>
     </ul>
 

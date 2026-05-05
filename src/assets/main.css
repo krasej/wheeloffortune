@@ -154,7 +154,7 @@ g.segment:nth-of-type(4n) {
   color: var(--color-text);
   border: none;
   padding: 0;
-  padding-bottom: 4px;
+  padding-bottom: 3px;
   border-radius: 40px;
   cursor: pointer;
   transition: background-color 0.3s;

@@ -16,19 +16,27 @@ const error = ref('');
 
 
 function formatOptions() {
-    const options = optionsInput.value.split(',').map(option => option.trim()).filter(option => option !== '')
+    let options = optionsInput.value
+        .split(',')
+        .map(option => option.trim())
+        .filter(option => option !== '')
+
+    options = options.map(option => {
+        if (option.length > 25) {
+            return option.substring(0, 25) + '...'
+        }
+        return option
+    })
+
     if (options.length > 0) {
         error.value = ''
         emit('options', options)
         optionsInput.value = ''
         isOpen.value = false
-    }
-
-    else {
+    } else {
         error.value = 'Please enter at least one option.'
     }
 }
-
 </script>
 <template>
     <div class="pro-button-container">
