@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, computed, watch, onDeactivated, onUnmounted } from 'vue'
 import ConfettiExplosion from "vue-confetti-explosion";
 import ProModule from './components/ProModule.vue'
 
@@ -131,7 +131,23 @@ function getTopSegment(angleDeg: number) {
 
 
 onMounted(() => {
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+      wheelRadius.value = 300
+      imageSize.value = 620
+      imageCenter.value = imageSize.value / 2
+    } else {
+      wheelRadius.value = 190
+      imageSize.value = 400
+      imageCenter.value = imageSize.value / 2
+    }
+  })
 })
+
+onUnmounted(() => {
+  window.removeEventListener('resize', () => { })
+})
+
 </script>
 
 <template>
