@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const emit =defineEmits(['options'])
+const emit = defineEmits(['options'])
 
 const optionsInput = ref('')
 const isOpen = ref(false)
@@ -29,13 +29,14 @@ function formatOptions() {
     </div>
     <div class="pro-module" v-show="isOpen">
         <div class="pro-instructions">
-            <p>Enter all options at once, separated by commas. For example: "Option 1, Option 2, Option 3". This will replace all existing options at once!</p>
+            <p>Enter all options at once, separated by commas. For example: "Option 1, Option 2, Option 3". This will
+                replace all existing options at once!</p>
         </div>
         <div v-if="error" class="error">
             {{ error }}
         </div>
-        <form @submit.prevent="formatOptions">
-            <textarea class="proTextinput" rows="4" v-model="optionsInput"
+        <form @submit.prevent="formatOptions" class="pro-form">
+            <textarea class="pro-text-input" rows="4" v-model="optionsInput"
                 placeholder="Enter all options at once, separated by comma"></textarea>
             <button class="add-button" type="submit">Format</button>
         </form>
@@ -45,12 +46,15 @@ function formatOptions() {
 </template>
 
 <style lang="css" scoped>
-.proTextinput {
+.pro-text-input {
     margin-top: 20px;
+    flex: 1;
     width: 100%;
+    width: fill-available;
+    box-sizing: border-box;
 }
 
-.pro-button-container{
+.pro-button-container {
     margin-top: 10px;
     margin-bottom: 10px;
 }
@@ -60,12 +64,24 @@ function formatOptions() {
     margin-top: 10px;
 }
 
-.pro-button{
+.pro-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pro-button {
     cursor: pointer;
     padding: 5px 10px;
     background-color: transparent;
     border: 1px solid var(--color-button-accent);
     color: var(--color-button-accent);
     border-radius: 5px;
-    }
+    flex: 1;
+}
+
+.add-button {
+    margin-top: 10px;
+    width: 100%;
+}
 </style>
