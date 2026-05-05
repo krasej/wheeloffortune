@@ -124,7 +124,7 @@ onMounted(() => {
   <div class="wheel-container">
     <h1 class="title-heading" ref="titleElement" spellcheck="false" contenteditable="true" @blur="validate" @keydown.enter="validate">{{ title }}</h1>
 
-    <ConfettiExplosion v-if="winner" :active="!!winner" :force="1" :duration="3000" :stageWidth="600" :stageHeight="500" :colors="['var(--color-segment-first)', 'var(--color-segment-second)', 'var(--color-segment-third)', 'var(--color-segment-fourth)', 'var(--color-segment-third)', 'var(--color-segment-alt)']" />
+    <ConfettiExplosion v-if="winner" :active="!!winner" :duration="3000" :stageWidth="800" :stageHeight="500" :colors="['var(--color-segment-first)', 'var(--color-segment-second)', 'var(--color-segment-third)', 'var(--color-segment-fourth)', 'var(--color-segment-third)', 'var(--color-segment-alt)']" />
 
     <svg width="400" height="400" class="wheel-svg">
       <circle cx="200" cy="200" r="170" class="outer-circle" />
