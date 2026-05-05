@@ -38,12 +38,12 @@ const anglePerSegment = computed(() => (2 * Math.PI) / numSegments.value)
 function getPath(i: number) {
   const startAngle = i * anglePerSegment.value
   const endAngle = (i + 1) * anglePerSegment.value
-  const x1 = 200 + 150 * Math.cos(startAngle)
-  const y1 = 200 + 150 * Math.sin(startAngle)
-  const x2 = 200 + 150 * Math.cos(endAngle)
-  const y2 = 200 + 150 * Math.sin(endAngle)
+  const x1 = 200 + 170 * Math.cos(startAngle)
+  const y1 = 200 + 170 * Math.sin(startAngle)
+  const x2 = 200 + 170 * Math.cos(endAngle)
+  const y2 = 200 + 170 * Math.sin(endAngle)
   const largeArc = endAngle - startAngle > Math.PI ? 1 : 0
-  return `M 200 200 L ${x1} ${y1} A 150 150 0 ${largeArc} 1 ${x2} ${y2} Z`
+  return `M 200 200 L ${x1} ${y1} A 170 170 0 ${largeArc} 1 ${x2} ${y2} Z`
 }
 
 function getTextX(i: number) {
@@ -124,10 +124,10 @@ onMounted(() => {
   <div class="wheel-container">
     <h1 class="title-heading" ref="titleElement" spellcheck="false" contenteditable="true" @blur="validate" @keydown.enter="validate">{{ title }}</h1>
 
-    <ConfettiExplosion v-if="winner" :active="!!winner" :force="0.5" :duration="3000" :particleCount="100" />
+    <ConfettiExplosion v-if="winner" :active="!!winner" :force="1" :duration="3000" :stageWidth="600" :stageHeight="500" :colors="['var(--color-segment-first)', 'var(--color-segment-second)', 'var(--color-segment-third)', 'var(--color-segment-fourth)', 'var(--color-segment-third)', 'var(--color-segment-alt)']" />
 
     <svg width="400" height="400" class="wheel-svg">
-      <circle cx="200" cy="200" r="150" class="outer-circle" />
+      <circle cx="200" cy="200" r="170" class="outer-circle" />
       <g v-for="(label, i) in segments" :key="i" class="segment"
         :style="{ transform: `rotate(${angle}deg)`, transformOrigin: '200px 200px' }">
         <path :d="getPath(i)" />
@@ -137,7 +137,7 @@ onMounted(() => {
       </g>
 
       <circle cx="200" cy="200" r="20" class="center-circle" />
-      <polygon points="200,60 185,35 215,35" class="pointer" />
+      <polygon points="200,40 185,20 215,20" class="pointer" />
     </svg>
     <button @click="spin" :disabled="isSpinning || numSegments === 0" class="spin-button">
       {{ isSpinning ? 'Spinning...' : 'Spin the Wheel' }}
