@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 
 const angle = ref(0)
 const isSpinning = ref(false)
@@ -9,6 +9,11 @@ const newPrize = ref('')
 let title = ref('Who is the best director?')
 let editTitle = ref(false)
 
+const watchTitle = watch(title, (newValue) => {
+
+  document.title = newValue
+}
+  , { immediate: true })
 
 const segments = ref([
   'Quentin Tarantino',
@@ -112,15 +117,17 @@ onMounted(() => {
     </div>
 
     <svg width="400" height="400" class="wheel-svg">
+      <circle cx="200" cy="200" r="150" class="outer-circle" />
       <g v-for="(label, i) in segments" :key="i" class="segment"
         :style="{ transform: `rotate(${angle}deg)`, transformOrigin: '200px 200px' }">
         <path :d="getPath(i)" />
-        <text :x="getTextX(i)+10" :y="getTextY(i)"
+        <text :x="getTextX(i) + 10" :y="getTextY(i)"
           :transform="`rotate(${getRadialAngle(i)}, ${getTextX(i)}, ${getTextY(i)})`" class="segment-text">{{ label
           }}</text>
       </g>
+
       <circle cx="200" cy="200" r="20" class="center-circle" />
-      <polygon points="200,50 185,30 215,30" class="pointer" />
+      <polygon points="200,60 185,35 215,35" class="pointer" />
     </svg>
     <button @click="spin" :disabled="isSpinning || numSegments === 0" class="spin-button">
       {{ isSpinning ? 'Spinning...' : 'Spin the Wheel' }}
@@ -140,7 +147,7 @@ onMounted(() => {
       <button @click="addPrize" class="add-button">Add Option</button>
     </div>
     <h3>Current Options:</h3>
-    <ul v-if="segments.length > 0" class="prize-list" >
+    <ul v-if="segments.length > 0" class="prize-list">
       <li v-for="(prize, index) in segments" :key="index">
         {{ prize }}
         <button @click="removePrize(index)" class="remove-button">x</button>
@@ -150,7 +157,6 @@ onMounted(() => {
 </template>
 
 <style>
-
 :root {
   --color-background: #222;
   --color-text: #ddd;
@@ -173,13 +179,15 @@ onMounted(() => {
   --color-white: #ffffff;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   background-color: var(--color-background);
   color: var(--color-text);
   font-family: 'Arial', sans-serif;
 }
+
 .wheel-container {
   display: flex;
   flex-direction: column;
@@ -188,9 +196,6 @@ html, body {
 }
 
 .wheel-svg {
-  border: 2px solid var(--color-card-border);
-  border-radius: 50%;
-  box-shadow: 0 4px 8px var(--color-card-shadow);
   margin-bottom: 20px;
 }
 
@@ -205,6 +210,7 @@ g.segment:last-of-type {
 g.segment:nth-of-type(2n) {
   fill: var(--color-segment-second);
 }
+
 g.segment:nth-of-type(3n) {
   fill: var(--color-segment-third);
 }
@@ -226,10 +232,18 @@ g.segment:nth-of-type(4n) {
   stroke-width: 2;
 }
 
+.outer-circle {
+  fill: none;
+  stroke: var(--color-white);
+  stroke-width: 3;
+  filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.5));
+}
+
 .pointer {
-  fill: var(--color-segment-secondary);
-  stroke: var(--color-card-border);
+  fill: var(--color-segment-second);
+  stroke: var(--color-white);
   stroke-width: 1;
+  filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.5));
 }
 
 .title-heading {
@@ -243,10 +257,14 @@ g.segment:nth-of-type(4n) {
 }
 
 @keyframes blink-cursor {
-  0%, 50% {
+
+  0%,
+  50% {
     opacity: 1;
   }
-  50.01%, 100% {
+
+  50.01%,
+  100% {
     opacity: 0;
   }
 }
@@ -289,7 +307,7 @@ g.segment:nth-of-type(4n) {
   background-color: var(--color-text-muted);
 }
 
-.prize-list{
+.prize-list {
   padding-left: 0;
 }
 
@@ -309,7 +327,8 @@ g.segment:nth-of-type(4n) {
   flex-wrap: wrap;
 }
 
-.prize-input, .edit-input {
+.prize-input,
+.edit-input {
   padding: 8px;
   font-size: 16px;
   border: 1px solid var(--color-border-muted);
@@ -317,7 +336,7 @@ g.segment:nth-of-type(4n) {
   width: 250px;
 }
 
-.edit-input{
+.edit-input {
   margin-top: 10px;
   margin-bottom: 20px;
 }
@@ -347,7 +366,7 @@ g.segment:nth-of-type(4n) {
 
 @media (min-width : 1024px) {
   .manage-options {
-      padding: 20px;
+    padding: 20px;
   }
 
   .add-button {
@@ -371,12 +390,12 @@ g.segment:nth-of-type(4n) {
   background-color: var(--color-surface);
 }
 
-h2{
+h2 {
   margin-bottom: 30px;
   margin-top: 40px;
 }
 
-h3{
+h3 {
   margin-top: 30px;
   margin-bottom: 20px;
 }
