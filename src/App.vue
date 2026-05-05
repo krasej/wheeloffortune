@@ -15,8 +15,9 @@ let title = ref('Who is the best director?')
 function validate(event: Event) {
   (event.target as HTMLInputElement).blur()
 
-  if(!titleElement.value?.innerText) return
+  if (!titleElement.value?.innerText) return
 
+  wasEdited.value = true
   title.value = titleElement.value.innerText.trim()
 }
 
@@ -27,7 +28,6 @@ const wasEdited = ref(false)
 const watchTitle = watch(title, (newValue) => {
 
   document.title = newValue
-  wasEdited.value = true
 }
   , { immediate: true })
 
@@ -136,9 +136,11 @@ onMounted(() => {
 
 <template>
   <div class="wheel-container">
-    <h1 class="title-heading" :class="{ 'edited': wasEdited }" ref="titleElement" spellcheck="false" contenteditable="true" @blur="validate" @keydown.enter="validate">{{ title }}</h1>
+    <h1 class="title-heading" :class="{ 'notEdited': !wasEdited }" ref="titleElement" spellcheck="false"
+      contenteditable="true" @blur="validate" @keydown.enter="validate">{{ title }}</h1>
 
-    <ConfettiExplosion v-if="winner" :active="!!winner" :duration="3000" :stageWidth="800" :stageHeight="imageSize" :colors="['var(--color-segment-first)', 'var(--color-segment-second)', 'var(--color-segment-third)', 'var(--color-segment-fourth)', 'var(--color-segment-third)', 'var(--color-segment-alt)']" />
+    <ConfettiExplosion v-if="winner" :active="!!winner" :duration="3000" :stageWidth="800" :stageHeight="imageSize"
+      :colors="['var(--color-segment-first)', 'var(--color-segment-second)', 'var(--color-segment-third)', 'var(--color-segment-fourth)', 'var(--color-segment-third)', 'var(--color-segment-alt)']" />
 
     <svg :width="imageSize" :height="imageSize" class="wheel-svg">
       <circle :cx="imageCenter" :cy="imageCenter" :r="wheelRadius" class="outer-circle" />
@@ -151,7 +153,8 @@ onMounted(() => {
       </g>
 
       <circle :cx="imageCenter" :cy="imageCenter" r="20" class="center-circle" />
-      <polygon :points="imageCenter + ',20 ' + (imageCenter - 15) + ',0 ' + (imageCenter + 15) + ',0'" class="pointer" />
+      <polygon :points="imageCenter + ',20 ' + (imageCenter - 15) + ',0 ' + (imageCenter + 15) + ',0'"
+        class="pointer" />
     </svg>
     <button @click="spin" :disabled="isSpinning || numSegments === 0" class="spin-button">
       {{ isSpinning ? 'Spinning...' : 'Spin the Wheel' }}

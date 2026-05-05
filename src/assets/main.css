@@ -116,7 +116,7 @@ g.segment:nth-of-type(4n) {
   display: inline-block;
 }
 
-.title-heading::after {
+.title-heading.notEdited::after {
   content: " _";
   animation: blink-cursor 1500ms steps(1, end) infinite;
 }
