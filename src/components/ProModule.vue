@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 const emit = defineEmits(['options'])
 
 const props = defineProps({
     options: {
-        type: Array,
+        type: Array as () => string[], // Better typing for TS
         required: true
     }
 })
@@ -15,49 +15,49 @@ const isOpen = ref(false);
 const error = ref('');
 
 
+watch(() => props.options, (newOptions) => {
+    optionsInput.value = newOptions.join(', ');
+}, { deep: true });
+
 function formatOptions() {
-    let options = optionsInput.value
+    let processedOptions = optionsInput.value
         .split(',')
         .map(option => option.trim())
         .filter(option => option !== '')
+        .map(option => (option.length > 25 ? option.substring(0, 25) + '...' : option));
 
-    options = options.map(option => {
-        if (option.length > 25) {
-            return option.substring(0, 25) + '...'
-        }
-        return option
-    })
-
-    if (options.length > 0) {
-        error.value = ''
-        emit('options', options)
-        optionsInput.value = ''
-        isOpen.value = false
+    if (processedOptions.length > 0) {
+        error.value = '';
+        emit('options', processedOptions);
+        isOpen.value = false;
     } else {
-        error.value = 'Please enter at least one option.'
+        error.value = 'Please enter at least one option.';
     }
 }
 </script>
+
 <template>
     <div class="pro-button-container">
-        <button class="pro-button" @click="isOpen = !isOpen">Show pro mode</button>
+        <button class="pro-button" @click="isOpen = !isOpen">
+            {{ isOpen ? 'Hide pro mode' : 'Show pro mode' }}
+        </button>
     </div>
+
     <div class="pro-module" v-show="isOpen">
         <div class="pro-instructions">
-            <p>Enter all options at once, separated by commas. For example: "Option 1, Option 2, Option 3". This will
-                replace all existing options at once!</p>
+            <p>Enter all options at once, separated by commas. This will replace all existing options!</p>
         </div>
+
         <div v-if="error" class="error">
             {{ error }}
         </div>
+
         <form @submit.prevent="formatOptions" class="pro-form">
             <textarea class="pro-text-input" rows="4" v-model="optionsInput"
-                placeholder="Enter all options at once, separated by comma"></textarea>
-            <button class="add-button" type="submit">Format</button>
+                placeholder="Option 1, Option 2, Option 3"></textarea>
+            <button class="add-button" type="submit">Format & Update</button>
         </form>
     </div>
-
-
 </template>
 
 <style lang="css" scoped>
