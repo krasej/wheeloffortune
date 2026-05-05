@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue'
+import ConfettiExplosion from "vue-confetti-explosion";
 import ProModule from './components/ProModule.vue'
 
 const angle = ref(0)
@@ -122,6 +123,8 @@ onMounted(() => {
 <template>
   <div class="wheel-container">
     <h1 class="title-heading" ref="titleElement" spellcheck="false" contenteditable="true" @blur="validate" @keydown.enter="validate">{{ title }}</h1>
+
+    <ConfettiExplosion v-if="winner" :active="!!winner" :force="0.5" :duration="3000" :particleCount="100" />
 
     <svg width="400" height="400" class="wheel-svg">
       <circle cx="200" cy="200" r="150" class="outer-circle" />

@@ -1462,6 +1462,11 @@ vscode-uri@^3.0.8:
   resolved "https://registry.npmjs.org/vscode-uri/-/vscode-uri-3.1.0.tgz"
   integrity sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==
 
+vue-confetti-explosion@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/vue-confetti-explosion/-/vue-confetti-explosion-1.0.2.tgz#84b873d400cf0301814bdd71329daa1ac741fd86"
+  integrity sha512-80OboM3/6BItIoZ6DpNcZFqGpF607kjIVc5af56oKgtFmt5yWehvJeoYhkzYlqxrqdBe0Ko4Ie3bWrmLau+dJw==
+
 vue-tsc@^3.2.6:
   version "3.2.6"
   resolved "https://registry.npmjs.org/vue-tsc/-/vue-tsc-3.2.6.tgz"
