@@ -127,10 +127,6 @@ onUnmounted(() => {
     <ConfettiExplosion v-if="winner" :active="!!winner" :duration="3000" :stageWidth="800" :stageHeight="imageSize"
         :colors="['var(--color-segment-first)', 'var(--color-segment-second)', 'var(--color-segment-third)', 'var(--color-segment-fourth)', 'var(--color-segment-third)', 'var(--color-segment-alt)']" />
 
-        {{ imageSize }}
-        {{ imageCenter }}
-        {{ wheelRadius }}
-
     <svg :width="imageSize" :height="imageSize" class="wheel-svg">
         <circle :cx="imageCenter" :cy="imageCenter" :r="wheelRadius" class="outer-circle" />
         <g v-for="(label, i) in segments" :key="i" class="segment"
