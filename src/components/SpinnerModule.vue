@@ -120,7 +120,7 @@ onUnmounted(() => {
 
 <template>
     <div class="spinner-module">
-        <ConfettiExplosion v-if="winner" :active="!!winner" :duration="3000" :stageWidth="800" :stageHeight="imageSize"
+        <ConfettiExplosion v-if="winner" :active="!!winner" :duration="3000" :stageWidth="imageSize" :stageHeight="imageSize"
             :colors="['var(--color-segment-first)', 'var(--color-segment-second)', 'var(--color-segment-third)', 'var(--color-segment-fourth)', 'var(--color-segment-third)', 'var(--color-segment-alt)']" />
 
         <svg :width="imageSize" :height="imageSize" :viewBox="`0 0 ${imageSize} ${imageSize}`" class="wheel-svg">
