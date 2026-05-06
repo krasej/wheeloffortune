@@ -24,6 +24,13 @@ const imageCenter = ref(imageSize.value / 2)
 
 
 function getPath(i: number) {
+
+    if (numSegments.value === 1) {
+        const r = wheelRadius.value;
+        const c = imageCenter.value;
+        return `M ${c} ${c - r} A ${r} ${r} 0 1 1 ${c} ${c + r} A ${r} ${r} 0 1 1 ${c} ${c - r} Z`;
+    }
+
     const startAngle = i * anglePerSegment.value
     const endAngle = (i + 1) * anglePerSegment.value
     const x1 = imageCenter.value + wheelRadius.value * Math.cos(startAngle)
