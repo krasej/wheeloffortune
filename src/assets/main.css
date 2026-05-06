@@ -70,11 +70,25 @@ g.segment:nth-of-type(4n) {
 }
 
 .segment-text {
-  fill: var(--color-white);
-  font-size: 16px;
-  text-anchor: middle;
-  dominant-baseline: middle;
-  text-shadow: 1px 1px 1px var(--color-card-border), -1px -1px 1px var(--color-card-border), 1px -1px 1px var(--color-card-border), -1px 1px 1px var(--color-card-border);
+  font-size: 14px;
+  line-height: 1.2;
+  color: white;
+  text-align: center;
+  white-space: normal; 
+  word-break: break-word;
+  text-shadow:
+    1px 1px 1px var(--color-card-border),
+    -1px -1px 1px var(--color-card-border),
+    1px -1px 1px var(--color-card-border),
+    -1px 1px 1px var(--color-card-border);
+}
+
+.segment-wrapper {
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  height: 100%;
+  width: 100%;
 }
 
 .center-circle {
@@ -267,13 +281,11 @@ h3 {
     padding: 20px;
   }
 
-.segment-text {
-  fill: var(--color-white);
-  font-size: 20px;
-  font-weight: bold;
-  text-anchor: middle;
-  dominant-baseline: middle;
+  .segment-text {
+    fill: var(--color-white);
+    font-size: 20px;
+    font-weight: bold;
+    text-anchor: middle;
+    dominant-baseline: middle;
+  }
 }
-
-}
-

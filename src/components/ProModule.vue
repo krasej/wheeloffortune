@@ -24,7 +24,7 @@ function formatOptions() {
         .split(',')
         .map(option => option.trim())
         .filter(option => option !== '')
-        .map(option => (option.length > 25 ? option.substring(0, 25) + '...' : option));
+        .map(option => (option.length > 40 ? option.substring(0, 40) + '...' : option));
 
     if (processedOptions.length > 0) {
         error.value = '';

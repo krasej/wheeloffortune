@@ -36,28 +36,17 @@ function getPath(i: number) {
 
 function getTextX(i: number) {
     const textAngle = (i + 0.5) * anglePerSegment.value
-    return imageCenter.value + Math.cos(textAngle) * wheelRadius.value * 0.5
+
+    return imageCenter.value + Math.cos(textAngle) * (wheelRadius.value * 0.3)
 }
 
 function getTextY(i: number) {
     const textAngle = (i + 0.5) * anglePerSegment.value
-    return imageCenter.value + Math.sin(textAngle) * wheelRadius.value * 0.5
+    return imageCenter.value + Math.sin(textAngle) * (wheelRadius.value * 0.3)
 }
 
 function getRadialAngle(i: number) {
-    return ((i + 0.5) * anglePerSegment.value) * 180 / Math.PI
-}
-
-
-function normalizeDegrees(deg: number) {
-    return ((deg % 360) + 360) % 360
-}
-
-function getTopSegment(angleDeg: number) {
-    if (numSegments.value === 0) return -1
-    const segSize = 360 / numSegments.value
-    const pointerAngle = normalizeDegrees(270 - angleDeg)
-    return Math.floor(pointerAngle / segSize) % numSegments.value
+    return ((i + 0.5) * anglePerSegment.value * 180) / Math.PI
 }
 
 
@@ -97,7 +86,6 @@ function spin() {
 }
 
 function resize() {
-    console.log(window.innerWidth)
     if (window.innerWidth > 768) {
         wheelRadius.value = 300
         imageSize.value = 620
@@ -124,31 +112,44 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <ConfettiExplosion v-if="winner" :active="!!winner" :duration="3000" :stageWidth="800" :stageHeight="imageSize"
-        :colors="['var(--color-segment-first)', 'var(--color-segment-second)', 'var(--color-segment-third)', 'var(--color-segment-fourth)', 'var(--color-segment-third)', 'var(--color-segment-alt)']" />
+    <div class="spinner-module">
+        <ConfettiExplosion v-if="winner" :active="!!winner" :duration="3000" :stageWidth="800" :stageHeight="imageSize"
+            :colors="['var(--color-segment-first)', 'var(--color-segment-second)', 'var(--color-segment-third)', 'var(--color-segment-fourth)', 'var(--color-segment-third)', 'var(--color-segment-alt)']" />
 
-    <svg :width="imageSize" :height="imageSize" class="wheel-svg">
-        <circle :cx="imageCenter" :cy="imageCenter" :r="wheelRadius" class="outer-circle" />
-        <g v-for="(label, i) in segments" :key="i" class="segment"
-            :style="{ transform: `rotate(${angle}deg)`, transformOrigin: `${imageCenter}px ${imageCenter}px` }">
-            <path :d="getPath(i)" />
-            <text :x="getTextX(i) + 10" :y="getTextY(i)"
-                :transform="`rotate(${getRadialAngle(i)}, ${getTextX(i)}, ${getTextY(i)})`" class="segment-text">{{
-                    label
-                }}</text>
-        </g>
+        <svg :width="imageSize" :height="imageSize" class="wheel-svg">
+            <circle :cx="imageCenter" :cy="imageCenter" :r="wheelRadius" class="outer-circle" />
+            <g v-for="(label, i) in segments" :key="i" class="segment"
+                :style="{ transform: `rotate(${angle}deg)`, transformOrigin: `${imageCenter}px ${imageCenter}px` }">
+                <path :d="getPath(i)" />
+                <foreignObject :x="getTextX(i)" :y="getTextY(i) - 25" :width="wheelRadius * 0.55" height="50"
+                    :transform="`rotate(${getRadialAngle(i)}, ${getTextX(i)}, ${getTextY(i)})`"
+                    style="overflow: visible;">
+                    <div xmlns="http://www.w3.org/1999/xhtml" class="segment-wrapper">
+                        <span class="segment-text">{{ label }}</span>
+                    </div>
+                </foreignObject>
+            </g>
 
-        <circle :cx="imageCenter" :cy="imageCenter" r="20" class="center-circle" />
-        <polygon :points="imageCenter + ',20 ' + (imageCenter - 15) + ',0 ' + (imageCenter + 15) + ',0'"
-            class="pointer" />
-    </svg>
-    <button @click="spin" :disabled="isSpinning || numSegments === 0" class="spin-button">
-        {{ isSpinning ? 'Spinning...' : 'Spin the Wheel' }}
-    </button>
-    <div v-if="winner" class="winner">
-        Winner: {{ winner }}
-    </div>
-    <div v-else class="winner">
-        <p>&nbsp;</p>
+            <circle :cx="imageCenter" :cy="imageCenter" r="20" class="center-circle" />
+            <polygon :points="imageCenter + ',20 ' + (imageCenter - 15) + ',0 ' + (imageCenter + 15) + ',0'"
+                class="pointer" />
+        </svg>
+        <button @click="spin" :disabled="isSpinning || numSegments === 0" class="spin-button">
+            {{ isSpinning ? 'Spinning...' : 'Spin the Wheel' }}
+        </button>
+        <div v-if="winner" class="winner">
+            Winner: {{ winner }}
+        </div>
+        <div v-else class="winner">
+            &nbsp;
+        </div>
     </div>
 </template>
+
+<style lang="css" scoped>
+.spinner-module {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+</style>

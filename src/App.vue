@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { onBeforeMount, onMounted, ref, watch } from 'vue'
 import SpinnerModule from './components/SpinnerModule.vue';
 import ProModule from './components/ProModule.vue'
 
@@ -7,8 +7,7 @@ const winner = ref<string | undefined>('')
 const newPrize = ref('')
 const titleElement = ref<HTMLElement | null>(null);
 
-
-let title = ref('Who is the best director?')
+const title = ref(localStorage.getItem('wheelTitle') || 'Who is the best director?')
 
 function validate(event: Event) {
   (event.target as HTMLInputElement).blur()
@@ -24,8 +23,9 @@ defineExpose({ titleElement })
 const wasEdited = ref(false)
 
 const watchTitle = watch(title, (newValue) => {
-
+  localStorage.setItem('wheelTitle', newValue)
   document.title = newValue
+
 }
   , { immediate: true })
 
@@ -34,15 +34,26 @@ const segments = ref([
   'Christopher Nolan',
 ])
 
+const watchSegments = watch(segments, (newSegments) => {
+  localStorage.setItem('wheelSegments', JSON.stringify(newSegments))
+}, { deep: true })
+
+onMounted(() => {
+  const savedSegments = localStorage.getItem('wheelSegments')
+  if (savedSegments) {
+    segments.value = JSON.parse(savedSegments)
+  }
+})
+
 
 function addOption() {
 
   let newPriceFormatted = newPrize.value.trim()
 
-  if( newPriceFormatted === '') return
+  if (newPriceFormatted === '') return
 
-  else if (newPriceFormatted.length >= 25) {
-    newPriceFormatted = newPriceFormatted.substring(0, 25) + '...'
+  else if (newPriceFormatted.length >= 40) {
+    newPriceFormatted = newPriceFormatted.substring(0, 40) + '...'
   }
 
   segments.value.push(newPriceFormatted)
@@ -61,7 +72,7 @@ function removeOption(index: number) {
     <h1 class="title-heading" :class="{ 'notEdited': !wasEdited }" ref="titleElement" spellcheck="false"
       contenteditable="true" @blur="validate" @keydown.enter="validate">{{ title }}</h1>
 
-      <SpinnerModule :segments="segments" @update:winner="winner = $event" />
+    <SpinnerModule :segments="segments" @update:winner="winner = $event" />
   </div>
 
   <div class="manage-options">
@@ -72,8 +83,8 @@ function removeOption(index: number) {
     </div>
     <h3>Current Options:</h3>
     <ul v-if="segments.length > 0" class="prize-list">
-      <li v-for="(prize, index) in segments" :key="index">
-        {{ prize }}
+      <li v-for="(option, index) in segments" :key="index">
+        {{ option }}
         <button @click="removeOption(index)" class="remove-button">&times;</button>
       </li>
     </ul>
