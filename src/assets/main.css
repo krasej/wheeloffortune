@@ -114,6 +114,7 @@ g.segment:nth-of-type(4n) {
 .title-heading {
   position: relative;
   display: inline-block;
+  text-align: center;
 }
 
 .title-heading.notEdited::after {

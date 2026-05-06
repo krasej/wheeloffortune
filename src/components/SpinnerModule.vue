@@ -92,9 +92,9 @@ function resize() {
         imageCenter.value = imageSize.value / 2
     } else {
 
-        imageSize.value = window.innerWidth - 40
+        imageSize.value = window.innerWidth - 20
         imageCenter.value = imageSize.value / 2
-        wheelRadius.value = imageCenter.value - 20
+        wheelRadius.value = imageCenter.value - 10
     }
 }
 
@@ -116,7 +116,7 @@ onUnmounted(() => {
         <ConfettiExplosion v-if="winner" :active="!!winner" :duration="3000" :stageWidth="800" :stageHeight="imageSize"
             :colors="['var(--color-segment-first)', 'var(--color-segment-second)', 'var(--color-segment-third)', 'var(--color-segment-fourth)', 'var(--color-segment-third)', 'var(--color-segment-alt)']" />
 
-        <svg :width="imageSize" :height="imageSize" class="wheel-svg">
+        <svg :width="imageSize" :height="imageSize" :viewBox="`0 0 ${imageSize} ${imageSize}`" class="wheel-svg">
             <circle :cx="imageCenter" :cy="imageCenter" :r="wheelRadius" class="outer-circle" />
             <g v-for="(label, i) in segments" :key="i" class="segment"
                 :style="{ transform: `rotate(${angle}deg)`, transformOrigin: `${imageCenter}px ${imageCenter}px` }">
@@ -151,5 +151,11 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow-x: hidden;
+}
+
+.wheel-svg {
+    max-width: 100%;
+    height: auto;
 }
 </style>
