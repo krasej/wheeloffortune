@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, watch, onDeactivated, onUnmounted } from 'vue'
-import ConfettiExplosion from "vue-confetti-explosion";
+import { ref, watch } from 'vue'
+import SpinnerModule from './components/SpinnerModule.vue';
 import ProModule from './components/ProModule.vue'
 
-const angle = ref(0)
-const isSpinning = ref(false)
 const winner = ref<string | undefined>('')
 const newPrize = ref('')
 const titleElement = ref<HTMLElement | null>(null);
@@ -36,79 +34,8 @@ const segments = ref([
   'Christopher Nolan',
 ])
 
-const numSegments = computed(() => segments.value.length)
-const anglePerSegment = computed(() => (2 * Math.PI) / numSegments.value)
 
-const wheelRadius = ref(190)
-const imageSize = ref(400)
-const imageCenter = ref(imageSize.value / 2)
-
-if (window.innerWidth > 768) {
-  wheelRadius.value = 300
-  imageSize.value = 620
-  imageCenter.value = imageSize.value / 2
-}
-
-function getPath(i: number) {
-  const startAngle = i * anglePerSegment.value
-  const endAngle = (i + 1) * anglePerSegment.value
-  const x1 = imageCenter.value + wheelRadius.value * Math.cos(startAngle)
-  const y1 = imageCenter.value + wheelRadius.value * Math.sin(startAngle)
-  const x2 = imageCenter.value + wheelRadius.value * Math.cos(endAngle)
-  const y2 = imageCenter.value + wheelRadius.value * Math.sin(endAngle)
-  const largeArc = endAngle - startAngle > Math.PI ? 1 : 0
-  return `M ${imageCenter.value} ${imageCenter.value} L ${x1} ${y1} A ${wheelRadius.value} ${wheelRadius.value} 0 ${largeArc} 1 ${x2} ${y2} Z`
-}
-
-function getTextX(i: number) {
-  const textAngle = (i + 0.5) * anglePerSegment.value
-  return imageCenter.value + Math.cos(textAngle) * wheelRadius.value * 0.5
-}
-
-function getTextY(i: number) {
-  const textAngle = (i + 0.5) * anglePerSegment.value
-  return imageCenter.value + Math.sin(textAngle) * wheelRadius.value * 0.5
-}
-
-function getRadialAngle(i: number) {
-  return ((i + 0.5) * anglePerSegment.value) * 180 / Math.PI
-}
-
-function spin() {
-  if (isSpinning.value || numSegments.value === 0) return
-  isSpinning.value = true
-  winner.value = ''
-
-  const randomSegment = Math.floor(Math.random() * numSegments.value)
-  const centerAngleRad = (randomSegment + 0.5) * anglePerSegment.value
-  const pointerAngleRad = -Math.PI / 2
-  const targetAngleRad = pointerAngleRad - centerAngleRad
-  const targetAngleDeg = targetAngleRad * 180 / Math.PI
-  const spins = Math.floor(Math.random() * 20) + 5
-  const targetAngle = targetAngleDeg + spins * 360
-
-  const duration = 5000 // 5 seconds
-  const startAngle = angle.value
-  const startTime = Date.now()
-
-  function animate() {
-    const elapsed = Date.now() - startTime
-    const progress = Math.min(elapsed / duration, 1)
-    const easeProgress = 1 - Math.pow(1 - progress, 3) // ease out
-    angle.value = startAngle + (targetAngle - startAngle) * easeProgress
-
-    if (progress < 1) {
-      requestAnimationFrame(animate)
-    } else {
-      isSpinning.value = false
-      winner.value = segments.value[randomSegment]
-      angle.value = ((angle.value % 360) + 360) % 360
-    }
-  }
-  animate()
-}
-
-function addPrize() {
+function addOption() {
 
   let newPriceFormatted = newPrize.value.trim()
 
@@ -122,39 +49,10 @@ function addPrize() {
   newPrize.value = ''
 }
 
-function removePrize(index: number) {
+function removeOption(index: number) {
   Array.prototype.splice.call(segments.value, index, 1)
 }
 
-function normalizeDegrees(deg: number) {
-  return ((deg % 360) + 360) % 360
-}
-
-function getTopSegment(angleDeg: number) {
-  if (numSegments.value === 0) return -1
-  const segSize = 360 / numSegments.value
-  const pointerAngle = normalizeDegrees(270 - angleDeg)
-  return Math.floor(pointerAngle / segSize) % numSegments.value
-}
-
-
-onMounted(() => {
-  window.addEventListener('resize', () => {
-    if (window.innerWidth > 768) {
-      wheelRadius.value = 300
-      imageSize.value = 620
-      imageCenter.value = imageSize.value / 2
-    } else {
-      wheelRadius.value = 190
-      imageSize.value = 400
-      imageCenter.value = imageSize.value / 2
-    }
-  })
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', () => { })
-})
 
 </script>
 
@@ -163,45 +61,20 @@ onUnmounted(() => {
     <h1 class="title-heading" :class="{ 'notEdited': !wasEdited }" ref="titleElement" spellcheck="false"
       contenteditable="true" @blur="validate" @keydown.enter="validate">{{ title }}</h1>
 
-    <ConfettiExplosion v-if="winner" :active="!!winner" :duration="3000" :stageWidth="800" :stageHeight="imageSize"
-      :colors="['var(--color-segment-first)', 'var(--color-segment-second)', 'var(--color-segment-third)', 'var(--color-segment-fourth)', 'var(--color-segment-third)', 'var(--color-segment-alt)']" />
-
-    <svg :width="imageSize" :height="imageSize" class="wheel-svg">
-      <circle :cx="imageCenter" :cy="imageCenter" :r="wheelRadius" class="outer-circle" />
-      <g v-for="(label, i) in segments" :key="i" class="segment"
-        :style="{ transform: `rotate(${angle}deg)`, transformOrigin: `${imageCenter}px ${imageCenter}px` }">
-        <path :d="getPath(i)" />
-        <text :x="getTextX(i) + 10" :y="getTextY(i)"
-          :transform="`rotate(${getRadialAngle(i)}, ${getTextX(i)}, ${getTextY(i)})`" class="segment-text">{{ label
-          }}</text>
-      </g>
-
-      <circle :cx="imageCenter" :cy="imageCenter" r="20" class="center-circle" />
-      <polygon :points="imageCenter + ',20 ' + (imageCenter - 15) + ',0 ' + (imageCenter + 15) + ',0'"
-        class="pointer" />
-    </svg>
-    <button @click="spin" :disabled="isSpinning || numSegments === 0" class="spin-button">
-      {{ isSpinning ? 'Spinning...' : 'Spin the Wheel' }}
-    </button>
-    <div v-if="winner" class="winner">
-      Winner: {{ winner }}
-    </div>
-    <div v-else class="winner">
-      <p>&nbsp;</p>
-    </div>
+      <SpinnerModule :segments="segments" @update:winner="winner = $event" />
   </div>
 
   <div class="manage-options">
     <h2>Manage Options</h2>
     <div class="add-prize">
-      <input @keydown.enter="addPrize" v-model="newPrize" placeholder="Enter new option" class="prize-input" />
-      <button @click="addPrize" class="add-button">Add Option</button>
+      <input @keydown.enter="addOption" v-model="newPrize" placeholder="Enter new option" class="prize-input" />
+      <button @click="addOption" class="add-button">Add Option</button>
     </div>
     <h3>Current Options:</h3>
     <ul v-if="segments.length > 0" class="prize-list">
       <li v-for="(prize, index) in segments" :key="index">
         {{ prize }}
-        <button @click="removePrize(index)" class="remove-button">&times;</button>
+        <button @click="removeOption(index)" class="remove-button">&times;</button>
       </li>
     </ul>
 

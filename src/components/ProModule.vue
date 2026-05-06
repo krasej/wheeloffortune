@@ -5,7 +5,7 @@ const emit = defineEmits(['options'])
 
 const props = defineProps({
     options: {
-        type: Array as () => string[], // Better typing for TS
+        type: Array as () => string[], 
         required: true
     }
 })
